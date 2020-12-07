@@ -4,16 +4,23 @@ use std::io::prelude::*;
 use std::fs;
 use std::thread;
 use std::time::Duration;
+use hello::ThreadPool;
+
 fn main (){
     println!("hello world");
     let listenser = TcpListener::bind("127.0.0.1:8899").unwrap();
+
+    let pool = ThreadPool::new(4);
     for stream in listenser.incoming() {
         println!("hhh listen ");
         let stream = stream.unwrap();
-        //handle_connection(stream);
-        thread::spawn(|| {
+        pool.execute(|| {
             handle_connection(stream);
         });
+        /*thread::spawn(|| {
+            handle_connection(stream);
+        });*/
+         
     }
 }
 
