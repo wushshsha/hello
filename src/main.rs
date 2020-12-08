@@ -11,7 +11,7 @@ fn main (){
     let listenser = TcpListener::bind("127.0.0.1:8899").unwrap();
 
     let pool = ThreadPool::new(4);
-    for stream in listenser.incoming() {
+    for stream in listenser.incoming().take(2) {
         println!("hhh listen ");
         let stream = stream.unwrap();
         pool.execute(|| {
@@ -34,7 +34,7 @@ fn handle_connection (mut stream:TcpStream){
     let (status, path) =  if buffer.starts_with(get) {
         ("HTTP/1.1 200 OK\r\n", "hello.html")
     } else if buffer.starts_with(sleep) {
-        thread::sleep(Duration::from_millis(3000));
+        thread::sleep(Duration::from_millis(10000));
         ("HTTP/1.1 200 OK\r\n", "hello.html")
     }else{
         ("HTTP/1.1 404 NOT FOUND\r\n", "404.html")
